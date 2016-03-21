@@ -6,21 +6,21 @@
  * IMPORTANT: when pushing to git, use `git push --tags`
  */
 
-var gulp = require('gulp'),
-    tag = require('gulp-tag-version'),
-    git = require('gulp-git'),
-    bump = require('gulp-bump'),
-    filter = require('gulp-filter');
+import gulp from 'gulp';
+import tag from 'gulp-tag-version';
+import git from 'gulp-git';
+import bump from 'gulp-bump';
+import filter from 'gulp-filter';
 
-gulp.task('patch', [], function () {
+gulp.task('patch', [], () => {
     return incrementVersion('patch');
 });
 
-gulp.task('minor', [], function(){
+gulp.task('minor', [], () => {
     return incrementVersion('minor');
 });
 
-gulp.task('major', [], function(){
+gulp.task('major', [], () => {
     return incrementVersion('major');
 });
 

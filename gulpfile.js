@@ -1,12 +1,11 @@
-var requireDir = require('require-dir'),
-    gulp = require('gulp');
+'use strict';
 
-requireDir('./gulp/tasks', { recurse: true });
+import requireDir from 'require-dir';
+import gulp from 'gulp';
 
-gulp.task('default', [ 'dist' ], function () {
-});
+requireDir('./build/tasks', { recurse: true });
+gulp.task('default', [ 'dev' ]);
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', (err) => {
     console.log('A global exception occured:', err);
-    console.log('Restart recommended');
 })

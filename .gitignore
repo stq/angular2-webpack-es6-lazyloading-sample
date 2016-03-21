@@ -8,5 +8,5 @@
 *.DotSettings.user
 coverage
 node_modules
-build
+public
 dist

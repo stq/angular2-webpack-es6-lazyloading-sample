@@ -4,7 +4,7 @@ var apihost = 'http://apihost.com',
     localhost8006 = 'http://localhost:8006',
     localhost8007 = 'http://localhost:8007';
 
-module.exports = {
+export default {
     settings: {
         apiHost: apihost,
         helpHost: apihost,
