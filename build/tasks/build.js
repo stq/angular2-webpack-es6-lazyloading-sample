@@ -1,13 +1,8 @@
-import gulp from 'gulp';
-import pathmap from '../pathmap.js';
-import latestTag from 'git-latest-tag';
-import path from 'path';
-import _ from 'lodash';
-import webpackConfig from '../webpack.config.js';
-import webpack from 'webpack';
+var gulp = require('gulp'),
+    pathmap = require('./../pathmap.js');
 
 gulp.task("build", [], (cb) => {
-    webpack(webpackConfig, (err, stats) => {
+    require('webpack')(require('./../webpack.config.js'), (err, stats) => {
         if (err) throw err;
         console.log("[webpack]", stats.toString({}));
         cb();
@@ -15,14 +10,14 @@ gulp.task("build", [], (cb) => {
 });
 
 gulp.task('dist', [ 'build' ], (cb) => {
-    latestTag((err, tag) => {
+    require('git-latest-tag')((err, tag) => {
         if (err) {
             console.err(err);
             cb();
             return;
         }
         gulp.src(pathmap.dist.from)
-            .pipe(gulp.dest(path.join(pathmap.dist.to, tag)))
+            .pipe(gulp.dest(require('path').join(pathmap.dist.to, tag)))
             .on('end', cb);
     })
 });

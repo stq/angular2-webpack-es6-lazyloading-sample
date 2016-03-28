@@ -1,12 +1,11 @@
-import webpack from 'webpack';
-import path from 'path';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import pathmap from './pathmap.js';
+var webpack = require('webpack'),
+    NpmInstallPlugin = require('npm-install-webpack-plugin'),
+    pathmap = require('./pathmap.js');
 
 var rootDir = pathmap.root,
     buildDir = pathmap.build;
 
-export default {
+module.exports = {
 
     resolve: {
 
@@ -28,66 +27,41 @@ export default {
 
     entry: {
         vendor: [
-            'angular',
-            'underscore',
-            'ui.router',
-            'angular-bootstrap-npm/dist/angular-bootstrap',
-            'oclazyload'
+            'angular'
         ],
         app: [
-            'app.module.js'
+            'index.js'
         ]
     },
 
     output: {
         path: buildDir,
-        publicPath: '',
         filename: '[name].js'
     },
     module: {
         loaders: [
-            {
-                test: /\.html$/,
-                loader: 'raw' + (production && '!html-minify' || ''),
-                exclude: /node_modules/
-            },
-            {
-                test: /\.js$/,
-                loader: 'babel',
-                exclude: [/node_modules/, /datagrid/]
-            },{
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
-                exclude: [/node_modules/]
-            },{
-                test: /\.less$/,
-                loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader'),
-                exclude: /node_modules/
-            },{
-                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader:  'url-loader',
-                exclude: /node_modules/,
-                query: {
-                    name: 'limit=10000&mimetype=application/font-woff'
-                }
-            },{
-                test: /\.(ttf|eot|svg|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'file-loader',
-                exclude: /node_modules/
-            },{
-                test: /\.(png|jpg)$/,
-                loader: 'url',
-                exclude: /node_modules/,
-                query: {
-                    name: 'limit=25000'
-                }
-            }
+
+            // load and compile javascript
+            { test: /\.js$/, exclude: /node_modules/, loader:"babel" },
+
+            // load css and process less
+            { test: /\.css$/, loader: "style!css"},
+
+            // load JSON files and HTML
+            { test: /\.json$/, loader: "json" },
+            { test: /\.html$/, exclude: /node_modules/, loader:"raw" },
+
+            // load fonts(inline base64 URLs for <=8k)
+            { test: /\.(ttf|eot|svg|otf)$/, loader: "file" },
+            { test: /\.woff(2)?$/, loader: "url?limit=8192&minetype=application/font-woff"},
+
+            // load images (inline base64 URLs for <=8k images)
+            { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192'}
         ]
     },
 
     plugins: [
-        new webpack.optimize.DedupePlugin(),
-        new ExtractTextPlugin('styles.css'),
-        new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js', Infinity)
+        new NpmInstallPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.js'})
     ]
 };
